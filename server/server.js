@@ -256,11 +256,12 @@ router.route('/playlists/:id')
     res.send(playlists)
   })
 
+app.use("/api",router)
 
 app.get('*',async (req,res)=>{
     res.sendFile(path.join(__dirname, '..', 'build', 'index.html'));
 });
 
-app.use("/api",router)
+
 
 app.listen(PORT,() =>console.log(`Server listening on port ${PORT}`));

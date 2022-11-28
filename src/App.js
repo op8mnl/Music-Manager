@@ -7,14 +7,21 @@ import React,{useState, useEffect} from 'react';
 function App() {
   
   const [playlist, setPlaylist] = useState([])
+  const [track, setTrack] = useState([])
 
   useEffect(async () => {
-    const res = await fetch("/api/playlists");
-    const data = await res.json();
-    while (data.length > 0){ 
-      setPlaylist(playlist => [...playlist, data.shift()]);
+    const resPlaylist = await fetch("/api/playlists");
+    const resTracks = await fetch("/api/tracks");
+    if (resPlaylist.ok){
+      const data = await resPlaylist.json();
+      setPlaylist(playlist => [...playlist, ...data]);
     }
-  })
+    if (resTracks.ok){
+      const data = await resTracks.json();
+      setTrack(track => [...track, ...data]);
+    }
+  
+  },[])
 
   const selectPlaylist = (e) =>{
     var data = [...document.getElementsByClassName("playlist-element selected")];
@@ -29,8 +36,9 @@ function App() {
   }
   const removePlaylist = async (e) =>{
     var parent = e.target.parentElement.parentElement.parentElement
-    var playlistContent = document.getElementById('content-list');
-    playlistContent.innerHTML='';
+    setPlaylist(current => current.filter(playlist => {
+      return playlist._id !== parent.id;
+    }));
     await fetch('/api/playlists', {
         method: 'DELETE',
         headers: {'Content-Type': 'application/json'},
@@ -40,20 +48,62 @@ function App() {
     });
   } 
 
-  // const addTrack = async (e)=>{
-  //   var playlist = document.getElementById("selected")
-  //   if (playlist != null) {
-  //       var parent = e.target.parentElement.parentElement
-  //       await fetch(`/api/playlists/${playlist.children[0].children[0].id}`, {
-  //           method: 'POST',
-  //           headers: {'Content-Type': 'application/json'},
-  //           body: JSON.stringify({
-  //               track : parent.children[0].id
-  //           })
-  //       });
-  //       document.getElementById('content-list').innerHTML='';
-  //   }
-  // }
+  const addTrack = async (e)=>{
+    var playlist = document.getElementById("selected")
+    if (playlist != null) {
+        var parent = e.target.parentElement.parentElement
+        await fetch(`/api/playlists/${playlist.children[0].children[0].id}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                track : parent.children[0].id
+            })
+        });
+        const updatePlaylist = playlist.map((playlistElement,i)=>{
+          if (playlistElement.playlist_id == playlist.children[0].children[0].id){
+            alert(playlistElement.tracks)
+          }
+        });
+        updatePlaylist()
+    }
+    else{
+      alert("No playlist selected!")
+    }
+  }
+
+  const createPlaylists = async () =>{
+    var id = await checkPlaylist();
+    const noOfTracks = 0;
+    const duration = '00:00';
+    const playlistObj = {
+      playlist_name : `Playlist #${id}`,
+      playlist_id : id,
+      no_of_tracks : noOfTracks,
+      total_duration : duration,
+      tracks : [],
+    }
+
+    await fetch('/api/playlists', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(playlistObj)
+    });
+
+    const res = await fetch('/api/playlists');
+    const data =  await res.json();
+    console.log(JSON.stringify(data[data.length-1]))
+    setPlaylist(playlist => [...playlist,data[data.length-1]])
+  };
+
+  async function checkPlaylist(){
+    const res = await fetch("/api/playlists");
+    const data = await res.json();
+    var id = "1";
+    if ((data.length != 0)){
+        id = parseInt(data[data.length-1].playlist_id) + 1
+    }
+    return id;
+  }
 
   const viewTracks = async (e)=>{
     var data = [...document.getElementsByClassName("wrapper1 selected")];
@@ -72,32 +122,52 @@ function App() {
         }
     }
   }
-
-  const mapPlaylist = playlist.map((data,i) => {
-    console.log(data);
-    <div class='playlist-element' id={data[i]._id} onClick = {selectPlaylist}>
+  const mapTracks = track.map((data) => 
+    <div class='element'>
+      <div class='number'id={data.track_id}>
+        {JSON.stringify(data.track_id).replaceAll('"','')}
+      </div>
+      <div class='titleE'id={data.track_name} >
+        {JSON.stringify(data.track_name).replaceAll('"','')}
+      </div>
+      <div class='artist'id={data.artist}>
+        {JSON.stringify(data.artist).replaceAll('"','')}
+      </div>
+      <div class='album'id={data.album_name}>
+        {JSON.stringify(data.album_name).replaceAll('"','')}
+      </div>
+      <div class='duration'>
+        {JSON.stringify(data.duration).replaceAll('"','')}
+      </div>
+      <div class='add'>
+        <img class = 'add' src={addIcon} onClick={addTrack} style={{height:"25px",width:"25px"}}/>
+      </div>
+    </div>
+  );
+  const mapPlaylist = playlist.map((data) => 
+    <div class='playlist-element' id={data._id} onClick = {selectPlaylist}>
       <div class = 'playlist-header-row'>
-        <div class = 'wrapper3' id = {data[i].playlist_id}>
+        <div class = 'wrapper3' id = {data.playlist_id}>
           <h3 contentEditable="true">
-            {data[i].playlist_name}
+            {data.playlist_name}
           </h3>
         </div>
         <div class = 'wrapper4'>
-          <img class = 'sub' src={subIcon} onClick={removePlaylist} height="15x" width="15px"/>
+          <img class = 'sub' src={subIcon} onClick={removePlaylist}height="15x" width="15px"/>
         </div>
       </div>
       <div class = 'playlist-content-row'>
-        <div class = 'wrapper1' id = 'trackDiv' onClick={viewTracks}>
-          {`Tracks: ${data[i].no_of_tracks}`}
+        <div class = 'wrapper1' id = 'trackDiv' onClick = {viewTracks}>
+          {`Tracks: ${data.no_of_tracks}`}
         </div>
         <div class = 'wrapper2'>
-          {`${data[i].total_duration}`}
+          {`${data.total_duration}`}
         </div>
       </div>
     </div>
-  })
+  );
 
-  return (
+  return ( 
     <>
       <body>
         <div class="accent">
@@ -136,19 +206,24 @@ function App() {
             </div>
             <div class="tracks-content">
               <ul id="result-list">
-
+                {mapTracks}
               </ul>
             </div>
           </div>
-          <div class="playlist-content-box">
-            <div id = 'playlist-header' class="playlist-header">
-              <h1>Playlists</h1>
-              <img id = "addPlaylist"src={addIcon} height="20px" width="20px"/>
+          <div class="playlist-wrapper">
+            <div class="playlist-content-box">
+              <div id = 'playlist-header' class="playlist-header">
+                <h1>Playlists</h1>
+                <img id = "addPlaylist"src={addIcon} onClick = {createPlaylists} height="20px" width="20px"/>
+              </div>
+              <div class="playlist-content">
+                <ul id = "content-list">
+                  {mapPlaylist}
+                </ul>
+              </div>
             </div>
-            <div class="playlist-content">
-              <ul id = "content-list">
-                {mapPlaylist}
-              </ul>
+            <div class ="playlist-nav-box">
+
             </div>
           </div>
         </div>

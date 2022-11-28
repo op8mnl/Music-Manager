@@ -1,10 +1,11 @@
 import express from 'express';
-
 import csv from 'csv-parser';
 import { createReadStream } from 'fs';
 import mongoose from 'mongoose';
 import Playlist from './schema/playlist.js';
 import Track from './schema/tracks.js';
+import Genre from './schema/genres.js';
+import Artist from './schema/artists.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -15,6 +16,7 @@ const router = express.Router();
 const PORT = process.env.PORT || 3000
 
 app.use(express.static(path.join(__dirname, '..', 'build')));
+app.use(express.json());
 
 //connecting to mongoDB 
 const username = "user";
@@ -35,21 +37,36 @@ db.once("open", function () {
 });
 
 //Reading all csv information and storing in local arrays of json objects
-const genres = [];
+var genres = [];
 createReadStream('assets/genres.csv')
   .pipe(csv())
   .on('data', (data) => genres.push(data))
-  .on('end', () => {
+  .on('end', async () => {
+    const state = await Genre.find();
+    if (state.length == 0){
+      for (var i = 0; i < genres.length; i++) {
+        const genre = new Genre({
+          genre_id: genres[i].genre_id,
+          title: genres[i].title,
+          parent: genres[i].parent,
+        })
+        genre.save(function(err, doc) {
+          if (err) return console.error(err);
+        });
+        console.log(`Genres: ${i+1}`);
+      }
+    }
+    genres = [];
     console.log("Loaded genres");
   });
-const tracks = [];
+var tracks = [];
 createReadStream('assets/raw_tracks.csv')
   .pipe(csv())
   .on('data', (data) => {tracks.push(data)})
   .on('end', async () => {
     const state = await Track.find();
     if (state.length == 0){
-      for (var i = 0; i < 1000; i++) {
+      for (var i = 0; i < tracks.length; i++) {
         const track = new Track({
           track_id: tracks[i].track_id,
           album_name:tracks[i].album_title,
@@ -66,24 +83,36 @@ createReadStream('assets/raw_tracks.csv')
         track.save(function(err, doc) {
           if (err) return console.error(err);
         });
-      console.log(`Progress: ${i+1}/1000`);
+      console.log(`Track: ${i+1}`);
       }
     }
+    tracks = [];
     console.log("Loaded tracks");
   });
 
-const albums = [];
-createReadStream('assets/raw_albums.csv')
-  .pipe(csv())
-  .on('data', (data) => albums.push(data))
-  .on('end', () => {
-    console.log("Loaded albums");
-  });
-const artists = [];
+var artists = [];
 createReadStream('assets/raw_artists.csv')
   .pipe(csv())
   .on('data', (data) => artists.push(data))
-  .on('end', () => {
+  .on('end', async () => {
+    const state = await Artist.find();
+    if (state.length == 0){
+      for (var i = 0; i < artists.length; i++) {
+        const artist = new Artist({
+          id: artists[i].artist_id,
+          startYear:artists[i].artist_active_year_begin,
+          endYear:artists[i].artist_active_year_end,
+          name:artists[i].artist_name,
+          favorites:artists[i].artist_favorites,
+          location: artists[i].artist_location,
+        })
+        artist.save(function(err, doc) {
+          if (err) return console.error(err);
+        });
+        console.log(`Artist: ${i+1}`);
+      }
+    }
+    artists = [];
     console.log("Loaded artists");
   });
 
@@ -95,21 +124,24 @@ app.use((req,res,next)=>{
 
 //routing for all tracks, albums, artists and genres
 router.route('/tracks')
-    .get((req,res) => {
-        res.send(tracks);
+    .get(async (req,res) => {
+      const data = await Track.find()
+      res.send(data);
     })
 router.route('/genres')
-    .get((req,res) => {
-        res.send(genres);
+    .get( async (req,res) => {
+      const data = await Genre.find()
+      res.send(data);
     })
 
 //routing for specific tracks using parameter
 router.route('/tracks/:track_id')
-  .get( (req,res) =>{
+  .get(async (req,res) =>{
+      const tracks = await Track.find();
       const id = req.params.track_id;
       var result = []
       for (var i = 0; i < tracks.length;i++) {
-        if (tracks[i].track_id.indexOf(id) > -1) {
+        if (String(tracks[i].track_id).indexOf(id) > -1) {
           const trackObj = {
             track_id: tracks[i].track_id,
             album_name:tracks[i].album_name,
@@ -129,37 +161,39 @@ router.route('/tracks/:track_id')
       res.send(result.slice(0,3))
   });
 router.route('/artistid/:id')
-  .get( (req,res) =>{
+  .get(async (req,res) =>{
+      const artists = await Artist.find();
       const id = req.params.id;
       var result = []
       for (var i = 0; i < artists.length;i++) {
-        if (artists[i].artist_id.indexOf(id) > -1) {
+        if (String(artists[i].id).indexOf(id) > -1) {
           const artistObj = {
-            id: artists[i].artist_id,
-            startYear:artists[i].artist_active_year_begin,
-            endYear:artists[i].artist_active_year_end,
-            name:artists[i].artist_name,
-            favorites:artists[i].artist_favorites,
-            location: artists[i].artist_location,
+            id: artists[i].id,
+            startYear:artists[i].startYear,
+            endYear:artists[i].endYear,
+            name:artists[i].name,
+            favorites:artists[i].favourites,
+            location: artists[i].location,
           }
           result.push(artistObj);
         }
       }
       res.send(result.slice(0,3))
   });
-  router.route('/artistname/:id')
-  .get( (req,res) =>{
+router.route('/artistname/:id')
+  .get( async(req,res) =>{
+      const artists = await Artist.find();
       const id = req.params.id;
       var result = []
       for (var i = 0; i < artists.length;i++) {
-        if ((artists[i].artist_name).toUpperCase().indexOf(id.toUpperCase()) > -1) {
+        if ((artists[i].name).toUpperCase().indexOf(id.toUpperCase()) > -1) {
           const artistObj = {
-            id: artists[i].artist_id,
-            startYear:artists[i].artist_active_year_begin,
-            endYear:artists[i].artist_active_year_end,
-            name:artists[i].artist_name,
-            favorites:artists[i].artist_favorites,
-            location: artists[i].artist_location,
+            id: artists[i].id,
+            startYear:artists[i].startYear,
+            endYear:artists[i].endYear,
+            name:artists[i].name,
+            favorites:artists[i].favourites,
+            location: artists[i].location,
           }
           result.push(artistObj);
         }
@@ -167,41 +201,29 @@ router.route('/artistid/:id')
       res.send(result.slice(0,3))
   });
 
-//routing for specific albums using parameter
-router.get('/api/albums/:album_id', (req,res) =>{
-    const id = req.params.album_id;
-    
-    const album = albums.find(t => t.album_id == parseInt(id));
-    if (album){ 
-        res.send(album)
-    }else{
-        res.status(404).send(`Album ${id} was not found`);
-    }
-});
-var playlists = [];
-async function updatePlaylists(){
-  const data = await Playlist.find();
-  playlists = [...data];
-}
+// var playlists = [];
+// async function updatePlaylists(){
+//   const data = await Playlist.find();
+//   playlists = [...data];
+// }
 router.route('/playlists') 
     .get(async (req,res)  =>  {
-        updatePlaylists()
-        res.send(playlists);
+        const data = await Playlist.find();
+        res.send(data);
     })
     .post((req,res)=>{
-        const data = new Playlist({
-          playlist_id: req.body.playlist_id,
-          playlist_name: req.body.playlist_name,
-          no_of_tracks: req.body.no_of_tracks,
-          total_duration: req.body.total_duration,
-          tracks: req.body.tracks,
-        })
-        data.save(function(err, doc) {
-          if (err) return console.error(err);
-          console.log("Document inserted succussfully!");
-        });
-        playlists.push(data);
-        res.send(req.body);
+      const data = new Playlist({
+        playlist_id: req.body.playlist_id,
+        playlist_name: req.body.playlist_name,
+        no_of_tracks: req.body.no_of_tracks,
+        total_duration: req.body.total_duration,
+        tracks: req.body.tracks,
+      })
+      data.save(function(err, doc) {
+        if (err) return console.error(err);
+        console.log("Document inserted succussfully!");
+      });
+      res.send(req.body);
     })
     .delete(async (req,res)=>{
         Playlist.findByIdAndDelete(req.body._id, function(err) { 
@@ -211,8 +233,7 @@ router.route('/playlists')
         // Playlist.remove({}, function(err) { 
         //   console.log('collection removed') 
         // });
-        updatePlaylists()
-        res.send(playlists);
+        res.send(await Playlist.find());
     })
 router.route('/playlists/:id')
   .get (async (req,res) => {
@@ -257,8 +278,7 @@ router.route('/playlists/:id')
         if (err) return console.error(err);
         console.log("Document updated succussfully!");
       }).clone();
-    updatePlaylists();
-    res.send(playlists)
+    res.send(await Playlist.find())
   })
 
 app.use("/api",router)

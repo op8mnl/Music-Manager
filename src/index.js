@@ -7,15 +7,17 @@ import { BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import PrivacyPolicy from './privacypolicy';
 import AUP from './aup';
 import DMCAPolicy from './dmcapolicy';
+import Start from './start';
 
 const Routing = () => {
   return(
     <Router>
       <Routes>
-        <Route exact path="/" element={<App/>}/>
+        <Route path="/" element={<Start />} />
         <Route path="/privacypolicy" element={<PrivacyPolicy/>} />
         <Route path="/aup" element={<AUP/>} />
         <Route path="/dmcapolicy" element={<DMCAPolicy/>} />
+        <Route path="/home" element={<App/>}/>
       </Routes>
     </Router>
   )

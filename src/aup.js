@@ -1,4 +1,11 @@
-<h1>Acceptable Use Policy</h1>
+import React from "react";
+
+
+
+function AUP(){
+    return(
+    <>
+       <h1>Acceptable Use Policy</h1>
 <p>Last updated: November 28, 2022</p>
 <h2><strong>AUP for Corporate Internet Systems</strong></h2>
 <ul>
@@ -47,4 +54,9 @@
     <li>
         <p>Use of the Internet via SE3316 Lab 4's computer system constitutes consent by the user to all of the terms and conditions of this policy.</p>
     </li>
-</ul>
+</ul> 
+    </>
+)
+}
+
+export default AUP;

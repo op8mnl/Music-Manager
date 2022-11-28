@@ -2,7 +2,7 @@ git checkout main
 
 git pull
 
-git checkout
+git checkout <branch name> 
 
 git merge main
 

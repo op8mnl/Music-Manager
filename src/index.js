@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PrivacyPolicy from "./components/privacypolicy";
 import AUP from "./components/aup";
 import DMCAPolicy from "./components/dmcapolicy";
+import Authentication from "./components/authentication";
 
 const Routing = () => {
   return (
@@ -16,6 +17,7 @@ const Routing = () => {
         <Route path="/privacypolicy" element={<PrivacyPolicy />} />
         <Route path="/aup" element={<AUP />} />
         <Route path="/dmcapolicy" element={<DMCAPolicy />} />
+        <Route path="/auth" element={<Authentication />} />
       </Routes>
     </Router>
   );

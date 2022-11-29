@@ -51,46 +51,95 @@ const SignUp = () => {
   };
 
   return (
-    <div className="sign-up-container">
+    <div class="sign-up-container">
       <h2>Not Signed Up Yet?</h2>
       <span>Sign Up with your Email and Password</span>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          label="Name"
-          required
-          onChange={handleChange}
-          name="displayName"
-          value={displayName}
-        />
+      <form
+        style={{ justifyContent: "center", alignItems: "center" }}
+        onSubmit={handleSubmit}
+      >
+        <div
+          style={{
+            height: "10%",
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <input
+            placeholder="Full Name"
+            class="form-control"
+            type="text"
+            label="Name"
+            required
+            onChange={handleChange}
+            name="displayName"
+            value={displayName}
+          />
+        </div>
 
-        <input
-          type="text"
-          label="Email"
-          required
-          onChange={handleChange}
-          name="email"
-          value={email}
-        />
+        <div
+          style={{
+            height: "10%",
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <input
+            placeholder="Email"
+            class="form-control"
+            type="text"
+            label="Email"
+            required
+            onChange={handleChange}
+            name="email"
+            value={email}
+          />
+        </div>
 
-        <input
-          type="password"
-          label="Password"
-          required
-          onChange={handleChange}
-          name="password"
-          value={password}
-        />
+        <div
+          style={{
+            height: "10%",
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <input
+            placeholder="Password"
+            class="form-control"
+            type="password"
+            label="Password"
+            required
+            onChange={handleChange}
+            name="password"
+            value={password}
+          />
+        </div>
 
-        <input
-          type="password"
-          label="Confirm Password"
-          required
-          onChange={handleChange}
-          name="confirmPassword"
-          value={confirmPassword}
-        />
-        <button type="submit">Sign Up</button>
+        <div
+          style={{
+            height: "10%",
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <input
+            placeholder="Confirm Password"
+            class="form-control"
+            type="password"
+            label="Confirm Password"
+            required
+            onChange={handleChange}
+            name="confirmPassword"
+            value={confirmPassword}
+          />
+        </div>
+        <button class="button" type="submit">
+          Sign Up
+        </button>
       </form>
     </div>
   );

@@ -183,7 +183,11 @@ function App() {
     <>
       <body>
         <div class="accent">
-          <div class="title">SE3316 Lab 4</div>
+          <a href = "/">
+            <div class="title">
+              SE3316 Lab 4
+            </div>
+          </a> 
           <div class="getGenreButton">
             <input
               class="button"

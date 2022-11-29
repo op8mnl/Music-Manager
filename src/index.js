@@ -8,16 +8,18 @@ import PrivacyPolicy from "./components/privacypolicy";
 import AUP from "./components/aup";
 import DMCAPolicy from "./components/dmcapolicy";
 import Authentication from "./components/authentication";
+import Start from "./components/start";
 
 const Routing = () => {
   return (
     <Router>
       <Routes>
-        <Route exact path="/" element={<App />} />
+        <Route exact path="/home" element={<App />} />
         <Route path="/privacypolicy" element={<PrivacyPolicy />} />
         <Route path="/aup" element={<AUP />} />
         <Route path="/dmcapolicy" element={<DMCAPolicy />} />
         <Route path="/auth" element={<Authentication />} />
+        <Route path="/" element={<Start />} />
       </Routes>
     </Router>
   );

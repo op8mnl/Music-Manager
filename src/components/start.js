@@ -6,9 +6,11 @@ function Start(){
         <>
             <body>
                 <div class="accent">
-                    <div class="title">
-                        SE3316 Lab 4 
-                    </div>
+                    <a href = "/">
+                        <div class="title">
+                            SE3316 Lab 4
+                        </div>
+                    </a> 
                 </div>
                 <div class="box">
                     <div class="start-box">
@@ -19,6 +21,7 @@ function Start(){
                         </div>
                         <div style={{order:"2",width:"100%"}}>
                             <a href="/auth"><input class="button"id="login"type="button"value="Login"/></a>
+                            <a href="/public"><input class="button"id="site"type="button"value="Go To Site >>>"/></a>
                         </div>
                     </div>
                 </div>

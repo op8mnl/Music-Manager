@@ -13,6 +13,7 @@ import Authentication from "./components/authentication";
 import AdminPage from "./components/admin";
 import Start from "./components/start";
 import Public from "./components/publicPlaylists";
+import ProtectedRoute from "./components/protectedRoute";
 
 const Routing = () => {
   return (
@@ -24,7 +25,9 @@ const Routing = () => {
         <Route path="/dmcapolicy" element={<DMCAPolicy />} />
         <Route path="/auth" element={<Authentication />} />
         <Route path="/public" element={<Public />} />
-        <Route path="/admin" element={<AdminPage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AdminPage />} path="/admin" />
+        </Route>
         <Route path="/" element={<Start />} />
       </Routes>
     </Router>
@@ -34,8 +37,8 @@ const Routing = () => {
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <Routing>
-      <UserProvider />
-    </Routing>
+    <UserProvider>
+      <Routing />
+    </UserProvider>
   </React.StrictMode>
 );

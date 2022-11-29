@@ -31,7 +31,7 @@ const SignIn = () => {
       );
       console.log(user);
       resetFields();
-      //setCurrentUser(user);
+      setCurrentUser(user);
       nav("../home");
     } catch (error) {
       alert(error);

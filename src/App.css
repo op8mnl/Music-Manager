@@ -38,8 +38,8 @@ a{
   text-decoration:none;
 }
 body{
-  overflow-y: hidden;
-  overflow-x: hidden;
+  overflow-y: visible;
+  overflow-x: visible;
 }
 .box{
   display: flex;

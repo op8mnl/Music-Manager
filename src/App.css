@@ -48,6 +48,19 @@ body{
   width: 100vw;
   background: rgb(0,0,0);
 }
+.start-box{
+  text-align: center;
+  order:1;
+  height: 85vh;  
+  width: calc(100% - 2em);
+  margin: 1em;
+  border-radius: 20px;
+  background: rgba(56, 56, 56, 0.356);
+  color:#ffffff;
+  display:flex;
+  flex-wrap: wrap;
+  align-content: center;
+}
 .content-box{
   order:1;
   height: 20vh;  

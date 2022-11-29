@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { signInAuthUserWithEmailAndPassword } from "./firebase";
+import { UserContext } from "./user.js";
 
 const defaultFields = {
   email: "",
@@ -9,29 +11,39 @@ const defaultFields = {
 
 const SignIn = () => {
   const [formFields, setFormFields] = useState(defaultFields);
-  const { email, password } = useState(formFields);
+  const { email, password } = formFields;
+  const nav = useNavigate();
+
+  const { setCurrentUser } = useContext(UserContext);
 
   const resetFields = () => {
     setFormFields(defaultFields);
   };
 
   const handleSubmit = async (event) => {
+    //alert(JSON.stringify(formFields));
     event.preventDefault();
-
+    //alert(email, password);
     try {
       const { user } = await signInAuthUserWithEmailAndPassword(
         email,
         password
       );
-
+      console.log(user);
       resetFields();
+      //setCurrentUser(user);
+      nav("../home");
     } catch (error) {
+      alert(error);
       switch (error.code) {
         case "auth/wrong-password":
           alert("Incorrect password");
           break;
         case "auth/user-not-found":
           alert("User not found, make sure your email is correct");
+          break;
+        case "auth/invalid-email":
+          alert("Invalid email");
           break;
         default:
           console.log(error);

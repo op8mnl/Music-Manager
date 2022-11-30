@@ -1,8 +1,7 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { signInAuthUserWithEmailAndPassword } from "./firebase";
-import { UserContext } from "./user.js";
 
 const defaultFields = {
   email: "",
@@ -14,8 +13,6 @@ const SignIn = () => {
   const { email, password } = formFields;
   const nav = useNavigate();
 
-  const { setCurrentUser } = useContext(UserContext);
-
   const resetFields = () => {
     setFormFields(defaultFields);
   };
@@ -24,14 +21,10 @@ const SignIn = () => {
     //alert(JSON.stringify(formFields));
     event.preventDefault();
     //alert(email, password);
+
     try {
-      const { user } = await signInAuthUserWithEmailAndPassword(
-        email,
-        password
-      );
-      console.log(user);
+      await signInAuthUserWithEmailAndPassword(email, password);
       resetFields();
-      setCurrentUser(user);
       nav("../home");
     } catch (error) {
       alert(error);

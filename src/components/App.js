@@ -2,6 +2,7 @@ import "../App.css";
 import addIcon from "../assets/addIcon.png";
 import subIcon from "../assets/subIcon.png";
 import React, { useState, useEffect } from "react";
+import { signOutUser } from "./firebase";
 
 function App() {
   const [playlist, setPlaylist] = useState([]);
@@ -183,11 +184,9 @@ function App() {
     <>
       <body>
         <div class="accent">
-          <a href = "/">
-            <div class="title">
-              SE3316 Lab 4
-            </div>
-          </a> 
+          <a href="/">
+            <div class="title">SE3316 Lab 4</div>
+          </a>
           <div class="getGenreButton">
             <input
               class="button"
@@ -279,7 +278,11 @@ function App() {
                 <ul id="content-list">{mapPlaylist}</ul>
               </div>
             </div>
-            <div class="playlist-nav-box"></div>
+            <div class="playlist-nav-box">
+              <button class="button" type="submit" onClick={signOutUser}>
+                Sign Out
+              </button>
+            </div>
           </div>
         </div>
       </body>

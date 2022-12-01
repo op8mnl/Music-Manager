@@ -3,6 +3,7 @@ import { sendEmailVerification } from "firebase/auth";
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "./user";
+import { passwordReset } from "./firebase";
 
 import { signInAuthUserWithEmailAndPassword } from "./firebase";
 
@@ -116,6 +117,7 @@ const SignIn = () => {
         <button class="button" type="submit">
           Sign In
         </button>
+        <button onClick={() => passwordReset(email)}>Password Reset</button>
       </form>
     </div>
   );

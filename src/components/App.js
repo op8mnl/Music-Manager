@@ -4,6 +4,7 @@ import subIcon from "../assets/subIcon.png";
 import React, { useState, useEffect } from "react";
 import { signOutUser } from "./firebase.js";
 import { useNavigate, Link } from "react-router-dom";
+import { passwordReset } from "./firebase";
 
 function App() {
   const [playlist, setPlaylist] = useState([]);

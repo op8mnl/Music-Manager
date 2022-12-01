@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import userEvent from "@testing-library/user-event";
+import { sendEmailVerification } from "firebase/auth";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "./user";
 
 import { signInAuthUserWithEmailAndPassword } from "./firebase";
 
@@ -13,6 +16,8 @@ const SignIn = () => {
   const { email, password } = formFields;
   const nav = useNavigate();
 
+  const { setCurrentUser } = useContext(UserContext);
+
   const resetFields = () => {
     setFormFields(defaultFields);
   };
@@ -23,9 +28,19 @@ const SignIn = () => {
     //alert(email, password);
 
     try {
-      await signInAuthUserWithEmailAndPassword(email, password);
-      resetFields();
-      nav("../home");
+      const { user } = await signInAuthUserWithEmailAndPassword(
+        email,
+        password
+      );
+
+      if (user.emailVerified == true) {
+        resetFields();
+        setCurrentUser(user);
+        nav("../home");
+      } else {
+        alert("Please verify your email");
+        sendEmailVerification(user);
+      }
     } catch (error) {
       alert(error);
       switch (error.code) {

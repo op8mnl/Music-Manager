@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import { sendEmailVerification } from "firebase/auth";
+
 import {
   createAuthUserWithEmailAndPassword,
   createUserDocumentFromAuth,
@@ -27,6 +29,7 @@ const SignUp = () => {
       alert("Passwords do not match");
       return;
     }
+
     try {
       const { user } = await createAuthUserWithEmailAndPassword(
         email,
@@ -34,6 +37,8 @@ const SignUp = () => {
       );
 
       await createUserDocumentFromAuth(user, { displayName });
+      sendEmailVerification(user);
+      alert("Email verification sent, please click the verification link");
       resetFields();
     } catch (error) {
       if (error.code == "auth/email-already-in-use") {

@@ -36,7 +36,6 @@ function PrivacyPolicy(){
             }),
           });
         setPolicy();
-        alert(policy);
     }
 
     return(

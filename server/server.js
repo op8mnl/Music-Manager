@@ -7,6 +7,8 @@ import Track from './schema/tracks.js';
 import Genre from './schema/genres.js';
 import Artist from './schema/artists.js';
 import PrivacyPolicy from './schema/privacypolicydb.js';
+import AUP from './schema/aupdb.js';
+import DMCAPolicy from './schema/dmcapolicydb.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -318,7 +320,7 @@ router.route('/playlists/:id')
       }).clone();
   })
 
-  router.route('/aup')
+  router.route('/dmcapolicy')
   .get (async (req,res) => {
     const policy = await DMCAPolicy.find();
     res.send(policy)
@@ -338,7 +340,7 @@ router.route('/playlists/:id')
   
 router.route('/pp')
   .post((req,res)=>{
-    const data = new PrivacyPolicy({
+    const data = new AUP({
       id: req.body.id,
       policyText: req.body.text,
     })

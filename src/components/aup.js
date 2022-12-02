@@ -16,8 +16,10 @@ function AUP(){
     const inputstyle = {
         width:"1200px",
         height:"200px",
-        resize: "vertical"
-    }    
+        resize: "vertical",
+        color: "black",
+        backgroundColor: "white"
+    }   
 
     function boxEnable(){
         document.getElementById("textArea").disabled = false;
@@ -39,21 +41,24 @@ function AUP(){
     }
 
     return(
-    <>
-    <div style={{padding: "30px"}}>{policy.policyText}</div>
-
-    <div style={{padding: "30px"}}>
-        <form>
+        <>
+        <div class="accent">
+            <a href = "/">
+                <div class="title">
+                    SE3316 Lab 4
+                </div>
+            </a> 
+        </div>
+        <div style={{paddingTop: "70px", paddingLeft: "20px", paddingright: "20px",background:"black", color:"white"}}>{policy.policyText}</div>
+        <form style={{paddingTop: "30px",paddingLeft: "20px", paddingright: "20px",background:"black", color:"white"}}>
             <textarea id="textArea" defaultValue={"Rewrite policy here...."} style={inputstyle} disabled></textarea>
             <br></br>
             <input type="button" value="Edit" onClick={boxEnable}></input>
             <div id="saveDiv">
             {show && <input type="button" value="Save" onClick={submit}></input>}
             </div>
-            
         </form>
-    </div>
-    </>
+        </>
 )
 }
 

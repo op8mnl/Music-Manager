@@ -6,6 +6,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
@@ -34,7 +35,7 @@ export const createUserDocumentFromAuth = async (
   if (!userAuth) return;
 
   const userDocRef = doc(fireDb, "users", userAuth.uid);
-  //console.log(userDocRef);
+  console.log(userDocRef);
 
   //taking the snapshot of user to compare later (like a data)
   const userSnapshot = await getDoc(userDocRef);
@@ -73,6 +74,22 @@ export const signInAuthUserWithEmailAndPassword = async (email, password) => {
   return await signInWithEmailAndPassword(auth, email, password);
 };
 
-export const signOutUser = async () => await signOut(auth);
+export const passwordReset = async (email) => {
+  try {
+    await sendPasswordResetEmail(auth, email);
+    alert("Password reset link has been sent");
+  } catch (error) {
+    console.log(error);
+    alert(error.message);
+  }
+};
+
+export const signOutUser = async () => {
+  await signOut(auth);
+  alert("Successfully signed out");
+};
+
 export const onAuthStateChangedListener = (callback) =>
   onAuthStateChanged(auth, callback);
+
+export default fireDb;

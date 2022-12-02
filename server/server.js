@@ -123,7 +123,6 @@ app.use((req, res, next) => {
 	console.log(`${req.method} request for ${req.url}`);
 	next();
 });
-
 //routing for all tracks, albums, artists and genres
 router.route("/tracks").get(async (req, res) => {
 	const data = await Track.find();
@@ -159,6 +158,11 @@ router.route("/tracks/:track_id").get(async (req, res) => {
 	}
 	res.send(result.slice(0, 3));
 });
+router.route("/track/:track_id").get(async (req, res) => {
+	const track = await Track.find({ _id: req.params.track_id });
+	res.send(track);
+});
+
 router.route("/artistid/:id").get(async (req, res) => {
 	const artists = await Artist.find();
 	const id = req.params.id;
@@ -213,10 +217,16 @@ router
 			isPublic: req.body.isPublic,
 			tracks: req.body.tracks,
 		});
-		data.save(function (err, doc) {
-			if (err) return console.error(err);
-			console.log("Document inserted succussfully!");
-		});
+		try {
+			data.save(function (err, result) {
+				if (err) {
+					throw err;
+				}
+			});
+		} catch (err) {
+			res.status(409).send("Duplicate Name");
+		}
+
 		res.send(req.body);
 	})
 	.delete(async (req, res) => {
@@ -277,6 +287,19 @@ router
 		res.send(await Playlist.find());
 	});
 
+router.route("/playlistVisibility/:playlist_id").get(async (req, res) => {
+	const visibility = await Playlist.find({ _id: req.params.playlist_id });
+	await Playlist.updateOne(
+		{ _id: req.params.playlist_id },
+		{
+			isPublic: !visibility[0].isPublic,
+		},
+		function (err, doc) {
+			if (err) return console.error(err);
+			console.log("Document updated succussfully!");
+		}
+	).clone();
+});
 router.route("/publicPlaylists").get(async (req, res) => {
 	const data = await Playlist.find();
 	var result = [];

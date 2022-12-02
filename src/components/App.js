@@ -2,10 +2,15 @@ import "../App.css";
 import addIcon from "../assets/addIcon.png";
 import subIcon from "../assets/subIcon.png";
 import React, { useState, useEffect } from "react";
+import Modal from "../modal/Modal";
 
 function App() {
 	const [playlist, setPlaylist] = useState([]);
 	const [track, setTrack] = useState([]);
+	const [show, setShow] = useState(false);
+	const [showEdit, setShowEdit] = useState(false);
+	const [confirm, setConfirm] = useState(false);
+	const [element, setElement] = useState();
 
 	useEffect(async () => {
 		const resPlaylist = await fetch("/api/playlists");
@@ -32,19 +37,21 @@ function App() {
 		}
 	};
 	const removePlaylist = async (e) => {
-		var parent = e.target.parentElement.parentElement.parentElement;
-		setPlaylist((current) =>
-			current.filter((playlist) => {
-				return playlist._id !== parent.id;
-			})
-		);
-		await fetch("/api/playlists", {
-			method: "DELETE",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				_id: parent.id,
-			}),
-		});
+		if (confirm == true) {
+			var parent = e.target.parentElement.parentElement.parentElement;
+			setPlaylist((current) =>
+				current.filter((playlist) => {
+					return playlist._id !== parent.id;
+				})
+			);
+			await fetch("/api/playlists", {
+				method: "DELETE",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					_id: parent.id,
+				}),
+			});
+		}
 	};
 
 	const addTrack = async (e) => {
@@ -69,28 +76,41 @@ function App() {
 		}
 	};
 
-	const createPlaylists = async () => {
-		var id = await checkPlaylist();
-		const noOfTracks = 0;
-		const duration = "00:00";
-		const playlistObj = {
-			playlist_name: `Playlist #${id}`,
-			playlist_id: id,
-			no_of_tracks: noOfTracks,
-			total_duration: duration,
-			tracks: [],
-		};
+	const createPlaylists = async (e) => {
+		if (e.target.id == "addPlaylist" || e.key == "Enter") {
+			var id = await checkPlaylist();
+			const noOfTracks = 0;
+			const duration = "00:00";
+			var playlistObj;
+			if (e.target.id != "addPlaylist") {
+				playlistObj = {
+					playlist_name: `${e.target.value}`,
+					playlist_id: id,
+					no_of_tracks: noOfTracks,
+					total_duration: duration,
+					tracks: [],
+				};
+			} else {
+				playlistObj = {
+					playlist_name: `Playlist #${id}`,
+					playlist_id: id,
+					no_of_tracks: noOfTracks,
+					total_duration: duration,
+					tracks: [],
+				};
+			}
 
-		await fetch("/api/playlists", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(playlistObj),
-		});
+			await fetch("/api/playlists", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(playlistObj),
+			});
 
-		const res = await fetch("/api/playlists");
-		const data = await res.json();
-		console.log(JSON.stringify(data[data.length - 1]));
-		setPlaylist((playlist) => [...playlist, data[data.length - 1]]);
+			const res = await fetch("/api/playlists");
+			const data = await res.json();
+			console.log(JSON.stringify(data[data.length - 1]));
+			setPlaylist((playlist) => [...playlist, data[data.length - 1]]);
+		}
 	};
 
 	async function checkPlaylist() {
@@ -121,7 +141,14 @@ function App() {
 		}
 	};
 
-	const setVisibility = async (e) => {};
+	const setVisibility = async (e) => {
+		await fetch(`/api/playlistVisibility/${e.target.parentElement.parentElement.parentElement.id}`);
+		const query = await fetch(
+			`/api/playlists/${e.target.parentElement.parentElement.parentElement.id}`
+		).clone();
+		const data = await query.json();
+		alert(`Public: ${data[0].isPublic}`);
+	};
 
 	const mapTracks = track.map((data) => (
 		<div class="element">
@@ -155,7 +182,29 @@ function App() {
 					<h3 contentEditable="true">{data.playlist_name}</h3>
 				</div>
 				<div class="wrapper4">
-					<img class="sub" src={subIcon} onClick={removePlaylist} height="15x" width="15px" />
+					<input
+						class="button"
+						id="getGenres"
+						type="button"
+						value={"e"}
+						onClick={(e) => {
+							showEditModal(e);
+						}}
+					/>
+					<input
+						class="button"
+						id="getGenres"
+						type="button"
+						value={"v"}
+						onClick={(e) => setVisibility(e)}
+					/>
+					<img
+						class="sub"
+						src={subIcon}
+						onClick={(e) => showConfirmDelete(e)}
+						height="15x"
+						width="15px"
+					/>
 				</div>
 			</div>
 			<div class="playlist-content-row">
@@ -167,6 +216,29 @@ function App() {
 		</div>
 	));
 
+	const confirmDelete = async () => {
+		setConfirm(true);
+		setShow(false);
+		setElement(null, removePlaylist(element));
+	};
+
+	const showConfirmDelete = (e) => {
+		setShow(true);
+		setElement(e);
+	};
+
+	const closeConfirmDelete = () => {
+		setConfirm(false);
+		setShow(false);
+	};
+
+	const showEditModal = (e) => {
+		setShowEdit(true);
+	};
+	const hideEditModal = () => {
+		setShowEdit(false);
+	};
+
 	return (
 		<>
 			<body>
@@ -174,9 +246,6 @@ function App() {
 					<a href="/">
 						<div class="title">SE3316 Lab 4</div>
 					</a>
-					<div class="getGenreButton">
-						<input class="button" id="getGenres" type="button" value="Get Genres" />
-					</div>
 					<div class="search-container">
 						<input
 							type="text"
@@ -184,33 +253,7 @@ function App() {
 							class="form-control"
 							maxlength="20"
 							placeholder="Add a Playlist..."
-						/>
-					</div>
-					<div class="search-container">
-						<input
-							type="text"
-							id="searchByIdA"
-							class="form-control"
-							maxlength="20"
-							placeholder="Search by Artist Id..."
-						/>
-					</div>
-					<div class="search-container">
-						<input
-							type="text"
-							id="searchById"
-							class="form-control"
-							maxlength="20"
-							placeholder="Search by Track Id..."
-						/>
-					</div>
-					<div class="search-container">
-						<input
-							type="text"
-							id="searchByIdN"
-							class="form-control"
-							maxlength="20"
-							placeholder="Search by Artist Name..."
+							onKeyUp={(e) => createPlaylists(e)}
 						/>
 					</div>
 				</div>
@@ -260,10 +303,33 @@ function App() {
 								<ul id="content-list">{mapPlaylist}</ul>
 							</div>
 						</div>
-						<div class="playlist-nav-box"></div>
 					</div>
 				</div>
 			</body>
+			<Modal title="Confirm Deletion" onClose={() => setShow(false)} show={show}>
+				<input
+					class="button"
+					id="getGenres"
+					type="button"
+					value={"Confirm Delete"}
+					onClick={confirmDelete}
+				/>
+				<input
+					class="button"
+					id="getGenres"
+					type="button"
+					value={"Cancel"}
+					onClick={closeConfirmDelete}
+				/>
+			</Modal>
+			<Modal title="Edit" onClose={() => hideEditModal()} show={showEdit}>
+				<div class="search-container">
+					<input type="text" class="form-control" maxlength="20" placeholder="Playlist Name" />
+				</div>
+				<div class="search-container">
+					<input type="text" class="form-control" maxlength="20" placeholder="Description" />
+				</div>
+			</Modal>
 		</>
 	);
 }

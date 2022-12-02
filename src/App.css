@@ -133,7 +133,7 @@ h3 {
 }
 /* Playlist styling ==============================================================================================*/
 .playlist-wrapper {
-	width: calc(20% - 2em);
+	width: calc(22% - 2em);
 	height: 85vh;
 	display: flex;
 	align-content: flex-start;
@@ -143,19 +143,7 @@ h3 {
 .playlist-content-box {
 	text-align: center;
 	order: 1;
-	height: 60%;
-	width: 100%;
-	margin: 1em;
-	border-radius: 20px;
-	background: rgba(56, 56, 56, 0.356);
-	display: flex;
-	align-content: flex-start;
-	flex-wrap: wrap;
-}
-.playlist-nav-box {
-	text-align: center;
-	order: 2;
-	height: 35%;
+	height: 100%;
 	width: 100%;
 	margin: 1em;
 	border-radius: 20px;

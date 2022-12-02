@@ -7,7 +7,8 @@ function Public() {
 	const [playlist, setPlaylist] = useState([]);
 	const [show, setShow] = useState(false);
 	const [showSearchModal, setShowSearchModal] = useState(false);
-	const result = useRef([]);
+
+	const [result, setResult] = useState([]);
 
 	const [playlistData, setPlaylistData] = useState({
 		playlist_name: "",
@@ -46,8 +47,7 @@ function Public() {
 			var search = text.toLowerCase().split(" ");
 			const query = await fetch(`/api/tracks/`);
 			const data = await query.json();
-			const results = [];
-			data.map((dataE) => {
+			data.map(async (dataE) => {
 				var genre = "";
 				if (dataE.track_genres.length != 0) {
 					genre = dataE.track_genres
@@ -59,26 +59,39 @@ function Public() {
 						.replaceAll(` `, "")
 						.toLowerCase();
 				}
+				var year = "N/A";
+				if (dataE.track_date_recorded.length != 0) {
+					year = dataE.track_date_recorded.split("/")[2];
+				}
 
 				const searchObj = [
 					dataE.artist.toLowerCase(),
 					dataE.track_name.toLowerCase(),
 					dataE.album_name.toLowerCase(),
 					genre,
+					dataE._id,
 				];
 				const found = search.some((r) => searchObj.indexOf(r) >= 0);
 				if (found) {
-					results.push(searchObj);
+					const query = await fetch(`/api/track/${searchObj[4]}`);
+					const data = await query.json();
+					var resultObj = {
+						n: data[0].track_name,
+						a: data[0].artist,
+						g: genre,
+						d: data[0].duration,
+						y: year,
+					};
+					setResult((result) => [...result, resultObj]);
 				}
 			});
-
-			result.current = results;
 			setShowSearchModal(true);
 			e.target.value = "";
 		}
 	};
 
 	const hideSearchModal = () => {
+		setResult([]);
 		setShowSearchModal(false);
 	};
 
@@ -201,27 +214,21 @@ function Public() {
 					</div>
 				))}
 			</Modal>
+
 			<SearchModal title="Search Results" onClose={() => hideSearchModal()} show={showSearchModal}>
-				{result.current.map((track) => (
+				{result.map((track) => (
 					<div class="element">
-						<div class="titleE" style={{ width: "15%" }} id={track[0]}>
-							{track[0]}
+						<div class="titleE" style={{ width: "27%" }}>
+							{track.n}
 						</div>
-						<div
-							class="titleE"
-							id={track[1]}
-							onClick={(e) => {
-								viewTracks(e);
-							}}>
-							{track[1]}
+						<div class="titleE" style={{ width: "27%" }}>
+							{track.a}
 						</div>
-						<div class="artist" id={track[2]}>
-							{track[2]}
-						</div>
-						<div class="duration">{track[3]}</div>
+						<div class="duration">{track.g}</div>
+						<div class="duration">{track.y}</div>
 						<div class="duration">
 							<a
-								href={`https://www.youtube.com/results?search_query=${track.album_name}+${track.track_name}`}
+								href={`https://www.youtube.com/results?search_query=${track.a}+${track.n}`}
 								target="_blank">
 								<input class="button" id="getGenres" type="button" value="Play >" />
 							</a>

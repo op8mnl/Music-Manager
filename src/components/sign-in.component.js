@@ -51,6 +51,9 @@ const SignIn = () => {
         case "auth/user-not-found":
           alert("User not found, make sure your email is correct");
           break;
+        case "auth/user-disabled":
+          alert("Please contact the administrator to enable your account");
+          break;
         case "auth/invalid-email":
           alert("Invalid email");
           break;

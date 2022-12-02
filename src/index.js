@@ -6,6 +6,7 @@ import App from "./components/App";
 import { UserProvider } from "./components/user";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import UsersController from "./components/usersController";
 import PrivacyPolicy from "./components/privacypolicy";
 import AUP from "./components/aup";
 import DMCAPolicy from "./components/dmcapolicy";
@@ -25,6 +26,7 @@ const Routing = () => {
         <Route path="/dmcapolicy" element={<DMCAPolicy />} />
         <Route path="/auth" element={<Authentication />} />
         <Route path="/public" element={<Public />} />
+        <Route path="/users" element={<UsersController />} />
         <Route element={<ProtectedRoute />}>
           <Route element={<AdminPage />} path="/admin" />
         </Route>

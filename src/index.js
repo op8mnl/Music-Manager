@@ -3,14 +3,22 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./components/App";
 
+import { UserProvider } from "./components/user";
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import UsersController from "./components/usersController";
 import PrivacyPolicy from "./components/privacypolicy";
 import AUP from "./components/aup";
 import DMCAPolicy from "./components/dmcapolicy";
 import Authentication from "./components/authentication";
+
 import DMCATakedown from "./components/dmcatakedown";
+
+import AdminPage from "./components/admin";
+
 import Start from "./components/start";
 import Public from "./components/publicPlaylists";
+import ProtectedRoute from "./components/usersController";
 
 const Routing = () => {
   return (
@@ -23,6 +31,10 @@ const Routing = () => {
         <Route path="/dmcatakedown" element={<DMCATakedown />} />
         <Route path="/auth" element={<Authentication />} />
         <Route path="/public" element={<Public />} />
+        <Route path="/users" element={<UsersController />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AdminPage />} path="/admin" />
+        </Route>
         <Route path="/" element={<Start />} />
       </Routes>
     </Router>
@@ -32,6 +44,8 @@ const Routing = () => {
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <Routing />
+    <UserProvider>
+      <Routing />
+    </UserProvider>
   </React.StrictMode>
 );

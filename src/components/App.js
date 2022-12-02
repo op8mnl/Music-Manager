@@ -2,10 +2,14 @@ import "../App.css";
 import addIcon from "../assets/addIcon.png";
 import subIcon from "../assets/subIcon.png";
 import React, { useState, useEffect } from "react";
+import { signOutUser } from "./firebase.js";
+import { useNavigate, Link } from "react-router-dom";
+import { passwordReset } from "./firebase";
 
 function App() {
   const [playlist, setPlaylist] = useState([]);
   const [track, setTrack] = useState([]);
+  const nav = useNavigate();
 
   useEffect(async () => {
     const resPlaylist = await fetch("/api/playlists");
@@ -127,6 +131,7 @@ function App() {
       }
     }
   };
+
   const mapTracks = track.map((data) => (
     <div class="element">
       <div class="number" id={data.track_id}>
@@ -183,11 +188,9 @@ function App() {
     <>
       <body>
         <div class="accent">
-          <a href = "/">
-            <div class="title">
-              SE3316 Lab 4
-            </div>
-          </a> 
+          <a href="/">
+            <div class="title">SE3316 Lab 4</div>
+          </a>
           <div class="getGenreButton">
             <input
               class="button"
@@ -279,7 +282,17 @@ function App() {
                 <ul id="content-list">{mapPlaylist}</ul>
               </div>
             </div>
-            <div class="playlist-nav-box"></div>
+            <div class="playlist-nav-box">
+              <a href="/">
+                <input
+                  class="button"
+                  id="getGenres"
+                  type="button"
+                  value="Sign Out"
+                  onClick={signOutUser}
+                />
+              </a>
+            </div>
           </div>
         </div>
       </body>

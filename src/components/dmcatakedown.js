@@ -1,4 +1,5 @@
 import React from 'react';
+import WorkDoc from '../assets/Workflow_Documentation.docx';
 
 const boxstyle = {
     height: "85vh",
@@ -24,12 +25,13 @@ function DMCATakedown(){
         <div class="box">
             <div style={boxstyle}>
                 <div style={{margin: "20px"}}>
-                    <p>The procedure for logging a DMCA notice is as follows:</p>
-                    <br></br>
+                    <p>For an intuitive document illustrating the procedures and administrative tools available, click the link below.</p>
+                    <a href = {WorkDoc} target = "_blank">DMCA Takedown Workflow Document</a>
+                    <p>To find the current DMCA Policy, click <a href="/dmcapolicy">here</a>.</p>
                     <br></br>
                     <br></br>
                     
-                    <p>Type of Request:         Date of Request</p>
+                    <p>Type of Request:&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;Date of Request:&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;Review:</p>
                     <select name="reqType" id="reqType">
                         <option value="" disabled selected>Select a Request Type</option>
                         <option value="Takedown Request">Takedown Request</option>
@@ -37,7 +39,12 @@ function DMCATakedown(){
                         <option value="Dispute Claim">Dispute Claim</option>
                     </select>
 
-                    <input type="date" id="date" style={{marginLeft: "50px"}}></input>
+                    <input type="date" id="date" style={{marginLeft: "50px", width: "130px"}}></input>
+
+                    <select name="reviewSel" id="reviewSel" style={{marginLeft: "50px", width: "200px"}}>
+                        <option value="" disabled selected>Select a Review</option>
+                    </select>
+
                 </div>
             </div>
         </div>

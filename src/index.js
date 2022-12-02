@@ -11,7 +11,11 @@ import PrivacyPolicy from "./components/privacypolicy";
 import AUP from "./components/aup";
 import DMCAPolicy from "./components/dmcapolicy";
 import Authentication from "./components/authentication";
+
+import DMCATakedown from "./components/dmcatakedown";
+
 import AdminPage from "./components/admin";
+
 import Start from "./components/start";
 import Public from "./components/publicPlaylists";
 import ProtectedRoute from "./components/usersController";
@@ -24,6 +28,7 @@ const Routing = () => {
         <Route path="/privacypolicy" element={<PrivacyPolicy />} />
         <Route path="/aup" element={<AUP />} />
         <Route path="/dmcapolicy" element={<DMCAPolicy />} />
+        <Route path="/dmcatakedown" element={<DMCATakedown />} />
         <Route path="/auth" element={<Authentication />} />
         <Route path="/public" element={<Public />} />
         <Route path="/users" element={<UsersController />} />

@@ -31,7 +31,7 @@ function DMCATakedown(){
                     <br></br>
                     <br></br>
                     
-                    <p>Type of Request:&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;Date of Request:&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;Review:</p>
+                    <p>Type of Request:&emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;Date of Request:&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;Review:</p>
                     <select name="reqType" id="reqType">
                         <option value="" disabled selected>Select a Request Type</option>
                         <option value="Takedown Request">Takedown Request</option>
@@ -41,9 +41,13 @@ function DMCATakedown(){
 
                     <input type="date" id="date" style={{marginLeft: "50px", width: "130px"}}></input>
 
-                    <select name="reviewSel" id="reviewSel" style={{marginLeft: "50px", width: "200px"}}>
+                    <select name="reviewSel" id="reviewSel" style={{marginLeft: "50px", width: "250px"}}>
                         <option value="" disabled selected>Select a Review</option>
                     </select>
+                    
+                    <p>
+                    <input type="submit" value="Submit Request"></input>
+                    </p>
 
                 </div>
             </div>

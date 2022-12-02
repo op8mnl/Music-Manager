@@ -5,13 +5,20 @@ import React, { useState, useEffect } from "react";
 import { signOutUser } from "./firebase.js";
 import { useNavigate, Link } from "react-router-dom";
 import { passwordReset } from "./firebase";
+import { UserProvider } from "./user";
+import { getAuth } from "firebase/auth";
 
-function App() {
+function App(props) {
   const [playlist, setPlaylist] = useState([]);
   const [track, setTrack] = useState([]);
   const nav = useNavigate();
 
+  const [currentUser, setCurrentUser] = useState([]);
+
   useEffect(async () => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    setCurrentUser(user);
     const resPlaylist = await fetch("/api/playlists");
     const resTracks = await fetch("/api/tracks");
     if (resPlaylist.ok) {
@@ -23,7 +30,7 @@ function App() {
       setTrack((track) => [...track, ...data]);
     }
   }, []);
-
+  console.log(currentUser);
   const selectPlaylist = (e) => {
     var data = [
       ...document.getElementsByClassName("playlist-element selected"),

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { collection, getDocs, QuerySnapshot } from "firebase/firestore";
 import { Navigate } from "react-router-dom";
 
-export const ProtectedRoute = ({ children }) => {
+export const UsersController = () => {
   const [users, setUsers] = useState([]);
 
   const fetchUsers = async () => {
@@ -22,4 +22,4 @@ export const ProtectedRoute = ({ children }) => {
   }, []);
 };
 
-export default ProtectedRoute;
+export default UsersController;

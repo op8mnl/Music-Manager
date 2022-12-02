@@ -6,7 +6,7 @@ import App from "./components/App";
 import { UserProvider } from "./components/user";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import UsersController from "./components/usersController";
+import UsersController from "./components/usersController.js";
 import PrivacyPolicy from "./components/privacypolicy";
 import AUP from "./components/aup";
 import DMCAPolicy from "./components/dmcapolicy";
@@ -18,7 +18,6 @@ import AdminPage from "./components/admin";
 
 import Start from "./components/start";
 import Public from "./components/publicPlaylists";
-import ProtectedRoute from "./components/usersController";
 
 const Routing = () => {
   return (
@@ -32,7 +31,7 @@ const Routing = () => {
         <Route path="/auth" element={<Authentication />} />
         <Route path="/public" element={<Public />} />
         <Route path="/users" element={<UsersController />} />
-        <Route element={<ProtectedRoute />}>
+        <Route>
           <Route element={<AdminPage />} path="/admin" />
         </Route>
         <Route path="/" element={<Start />} />

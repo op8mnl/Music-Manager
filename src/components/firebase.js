@@ -35,7 +35,7 @@ export const createUserDocumentFromAuth = async (
   if (!userAuth) return;
 
   const userDocRef = doc(fireDb, "users", userAuth.uid);
-  console.log(userDocRef);
+  //console.log(userDocRef);
 
   //taking the snapshot of user to compare later (like a data)
   const userSnapshot = await getDoc(userDocRef);

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
+import { findAllInRenderedTree } from "react-dom/test-utils";
 import WorkDoc from '../assets/Workflow_Documentation.docx';
 
 const boxstyle = {
@@ -10,8 +11,53 @@ const boxstyle = {
     color:"#ffffff",
   }
 
-
+  
 function DMCATakedown(){
+
+    const [playlists, setPlaylists] = useState([]);
+
+    useEffect(async () => {
+        const playlistget = await fetch("/api/playlists");
+        if (playlistget.ok) {
+          const data = await playlistget.json();
+          setPlaylists(data);
+        }
+    }, []);
+    
+    var List = []
+    List = playlists.map(function(element){
+        return ({value: element.playlist_name, id: element._id});
+    })
+
+    const reviewSel = document.getElementById("reviewSel");
+    for(let i =0; i<List.length;i++){
+        reviewSel.options[reviewSel.options.length] = new Option(List[i].value, i);
+    }
+
+    async function submit(){
+        const reqPlaylist = document.getElementById("reviewSel").options[document.getElementById("reviewSel").selectedIndex].text;
+        for(let i=0; i<List.length;i++){
+            if(reqPlaylist == List[i].value){
+                const playobj=List[i];
+            }
+        }
+
+
+        const reqDate = document.getElementById("date".value)
+        const reqType = document.getElementById("reqType".value)
+        const reqObj = {reqType, reqDate}
+
+        // await fetch(`/api/playlists/${playobj.id}`, {
+        //     method: "POST",
+        //     headers: { "Content-Type": "application/json" },
+        //     body: JSON.stringify({
+        //         request: 
+                
+        //     }),
+        //   });
+        // setPlaylists();
+    }
+
     return(
     <>
         <body>
@@ -44,9 +90,9 @@ function DMCATakedown(){
                     <select name="reviewSel" id="reviewSel" style={{marginLeft: "50px", width: "250px"}}>
                         <option value="" disabled selected>Select a Review</option>
                     </select>
-                    
+
                     <p>
-                    <input type="submit" value="Submit Request"></input>
+                    <input type="submit" value="Submit Request" onClick={submit}></input>
                     </p>
 
                 </div>

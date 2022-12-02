@@ -2,17 +2,28 @@ import "../App.css";
 import addIcon from "../assets/addIcon.png";
 import subIcon from "../assets/subIcon.png";
 import React, { useState, useEffect } from "react";
+import { signOutUser } from "./firebase.js";
+import { useNavigate, Link } from "react-router-dom";
+import { passwordReset } from "./firebase";
+import { UserProvider } from "./user";
+import { getAuth } from "firebase/auth";
 import Modal from "../modal/Modal";
 
-function App() {
+function App(props) {
 	const [playlist, setPlaylist] = useState([]);
 	const [track, setTrack] = useState([]);
+	const nav = useNavigate();
+
+	const [currentUser, setCurrentUser] = useState([]);
 	const [show, setShow] = useState(false);
 	const [showEdit, setShowEdit] = useState(false);
 	const [confirm, setConfirm] = useState(false);
 	const [element, setElement] = useState();
 
 	useEffect(async () => {
+		const auth = getAuth();
+		const user = auth.currentUser;
+		setCurrentUser(user);
 		const resPlaylist = await fetch("/api/playlists");
 		const resTracks = await fetch("/api/tracks");
 		if (resPlaylist.ok) {
@@ -24,7 +35,7 @@ function App() {
 			setTrack((track) => [...track, ...data]);
 		}
 	}, []);
-
+	console.log(currentUser);
 	const selectPlaylist = (e) => {
 		var data = [...document.getElementsByClassName("playlist-element selected")];
 		data.map((x, i) => {
@@ -37,21 +48,19 @@ function App() {
 		}
 	};
 	const removePlaylist = async (e) => {
-		if (confirm == true) {
-			var parent = e.target.parentElement.parentElement.parentElement;
-			setPlaylist((current) =>
-				current.filter((playlist) => {
-					return playlist._id !== parent.id;
-				})
-			);
-			await fetch("/api/playlists", {
-				method: "DELETE",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					_id: parent.id,
-				}),
-			});
-		}
+		var parent = e.target.parentElement.parentElement.parentElement;
+		setPlaylist((current) =>
+			current.filter((playlist) => {
+				return playlist._id !== parent.id;
+			})
+		);
+		await fetch("/api/playlists", {
+			method: "DELETE",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				_id: parent.id,
+			}),
+		});
 	};
 
 	const addTrack = async (e) => {

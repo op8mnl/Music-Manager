@@ -27,6 +27,12 @@ const PlaylistSchema = new Schema({
 		type: Number,
 		required: true,
 	},
+	requests: [
+		{
+			req_type: String,
+			date: String,
+		},
+	],
 	tracks: [
 		{
 			_id: false,

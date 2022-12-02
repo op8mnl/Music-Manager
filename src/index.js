@@ -12,24 +12,24 @@ import Start from "./components/start";
 import Public from "./components/publicPlaylists";
 
 const Routing = () => {
-  return (
-    <Router>
-      <Routes>
-        <Route exact path="/home" element={<App />} />
-        <Route path="/privacypolicy" element={<PrivacyPolicy />} />
-        <Route path="/aup" element={<AUP />} />
-        <Route path="/dmcapolicy" element={<DMCAPolicy />} />
-        <Route path="/auth" element={<Authentication />} />
-        <Route path="/public" element={<Public />} />
-        <Route path="/" element={<Start />} />
-      </Routes>
-    </Router>
-  );
+	return (
+		<Router>
+			<Routes>
+				<Route exact path="/home" element={<App />} />
+				<Route path="/privacypolicy" element={<PrivacyPolicy />} />
+				<Route path="/aup" element={<AUP />} />
+				<Route path="/dmcapolicy" element={<DMCAPolicy />} />
+				<Route path="/auth" element={<Authentication />} />
+				<Route path="/public" element={<Public />} />
+				<Route path="/" element={<Start />} />
+			</Routes>
+		</Router>
+	);
 };
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <Routing />
-  </React.StrictMode>
+	<React.StrictMode>
+		<Routing />
+	</React.StrictMode>
 );

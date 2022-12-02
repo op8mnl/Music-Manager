@@ -1,14 +1,11 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
+import UserContext from "./userContext.js";
 
 import {
   onAuthStateChangedListener,
   createUserDocumentFromAuth,
 } from "./firebase.js";
-
-export const UserContext = createContext({
-  currentUser: null,
-  setCurrentUser: () => null,
-});
 
 export const UserProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -28,5 +25,3 @@ export const UserProvider = ({ children }) => {
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
-
-export default UserContext;

@@ -14,7 +14,7 @@ import Authentication from "./components/authentication";
 import AdminPage from "./components/admin";
 import Start from "./components/start";
 import Public from "./components/publicPlaylists";
-import ProtectedRoute from "./components/protectedRoute";
+import ProtectedRoute from "./components/usersController";
 
 const Routing = () => {
   return (

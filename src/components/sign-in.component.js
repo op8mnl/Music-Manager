@@ -2,7 +2,7 @@ import userEvent from "@testing-library/user-event";
 import { sendEmailVerification } from "firebase/auth";
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "./user";
+import { UserContext } from "./userContext";
 import { passwordReset } from "./firebase";
 
 import { signInAuthUserWithEmailAndPassword } from "./firebase";
@@ -38,12 +38,13 @@ const SignIn = () => {
         resetFields();
         setCurrentUser(user);
         nav("../home");
+        alert("Hello, " + user.email);
       } else {
         alert("Please verify your email");
         sendEmailVerification(user);
       }
     } catch (error) {
-      alert(error);
+      //alert(error);
       switch (error.code) {
         case "auth/wrong-password":
           alert("Incorrect password");

@@ -1,8 +1,9 @@
 import { fireDb } from "./firebase.js";
 import { useState, useEffect } from "react";
 import { collection, getDocs, QuerySnapshot } from "firebase/firestore";
+import { Navigate } from "react-router-dom";
 
-export const UsersController = () => {
+export const ProtectedRoute = ({ children }) => {
   const [users, setUsers] = useState([]);
 
   const fetchUsers = async () => {
@@ -19,14 +20,6 @@ export const UsersController = () => {
   useEffect(() => {
     fetchUsers();
   }, []);
-
-  return (
-    <div class="users">
-      {users?.map((user, i) => (
-        <p key={i}>{user.user}</p>
-      ))}
-    </div>
-  );
 };
 
-export default UsersController;
+export default ProtectedRoute;

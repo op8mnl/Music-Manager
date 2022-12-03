@@ -289,7 +289,19 @@ router
 		).clone();
 		res.send(await Playlist.find());
 	});
-
+router.route("/playlistsave/:id").post(async function (req, res) {
+	await Playlist.updateOne(
+		{ id: req.params.id },
+		{
+			playlist_name: req.body.name,
+			description: req.body.desc,
+		},
+		function (err, doc) {
+			if (err) return console.error(err);
+			console.log("Document updated succussfully!");
+		}
+	).clone();
+});
 router.route("/playlistVisibility/:playlist_id").get(async (req, res) => {
 	const visibility = await Playlist.find({ _id: req.params.playlist_id });
 	await Playlist.updateOne(

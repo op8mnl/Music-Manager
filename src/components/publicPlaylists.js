@@ -184,6 +184,7 @@ function Public() {
 				</div>
 			</body>
 			<Modal title={playlistData.playlist_name} onClose={() => hideModal()} show={show}>
+				{playlistData.description}
 				{playlistData.tracks.map((track) => (
 					<div class="element">
 						<div class="number" id={track.track_id}>

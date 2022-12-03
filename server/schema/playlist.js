@@ -15,9 +15,11 @@ const PlaylistSchema = new Schema({
 		type: Boolean,
 		default: false,
 	},
+	description: String,
+
 	creator: {
 		type: String,
-		default: "user",
+		default: "parlayleague420@gmail.com",
 	},
 	rating: {
 		type: Number,

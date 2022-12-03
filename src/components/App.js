@@ -19,6 +19,10 @@ function App(props) {
 	const [showEdit, setShowEdit] = useState(false);
 	const [confirm, setConfirm] = useState(false);
 	const [element, setElement] = useState();
+	const [current, setCurrent] = useState({
+		n: "",
+		d: "",
+	});
 
 	useEffect(async () => {
 		const auth = getAuth();
@@ -241,11 +245,32 @@ function App(props) {
 		setShow(false);
 	};
 
-	const showEditModal = (e) => {
+	const showEditModal = async (e) => {
+		const query = await fetch(
+			`/api/playlists/${e.target.parentElement.parentElement.parentElement.id}`
+		);
+		const data = await query.json();
+		const currentObj = {
+			n: data[0].playlist_name,
+			d: data[0].description,
+		};
+		setCurrent(currentObj);
 		setShowEdit(true);
 	};
 	const hideEditModal = () => {
 		setShowEdit(false);
+	};
+
+	const save = async (e) => {
+		const one = {
+			name: e.target.parentElement.parentElement.children[0].children[0].value,
+			desc: e.target.parentElement.parentElement.children[1].children[0].value,
+		};
+		await fetch(`/api/playlistsave/${e.target.parentElement.parentElement.parentElement.id}"`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(one),
+		});
 	};
 
 	return (
@@ -333,10 +358,31 @@ function App(props) {
 			</Modal>
 			<Modal title="Edit" onClose={() => hideEditModal()} show={showEdit}>
 				<div class="search-container">
-					<input type="text" class="form-control" maxlength="20" placeholder="Playlist Name" />
+					<input
+						type="text"
+						class="form-control"
+						maxlength="20"
+						placeholder="Playlist Name"
+						value={current.n}
+					/>
 				</div>
 				<div class="search-container">
-					<input type="text" class="form-control" maxlength="20" placeholder="Description" />
+					<input
+						type="text"
+						class="form-control"
+						maxlength="20"
+						placeholder="Description"
+						value={current.d}
+					/>
+				</div>
+				<div class="search-container">
+					<input
+						class="button"
+						id="getGenres"
+						type="button"
+						value={"Save"}
+						onClick={(e) => save(e)}
+					/>
 				</div>
 			</Modal>
 		</>
